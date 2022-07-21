@@ -5,7 +5,7 @@
   become: yes
 
   vars:
-    sourse_file: ./MyWebSite/Index.html
+    soucse_file: ./MyWebSite/Index.html
     destin_file: /var/www/html
   
   tasks:
@@ -18,7 +18,7 @@
       apt: name=apache2 state=latest
 
     - name: Copy file for servers
-      copy: src={{ sourse_file }} dest={{ destin_file }} mode=0555
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
       notify: Restart Apache for Ubuntu
 
     - name: Start Apache on servers
@@ -32,7 +32,7 @@
       yam: name=httpd state=latest
 
     - name: Copy file for servers
-      copy: src={{ sourse_file }} dest={{ destin_file }} mode=0555
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
       notify: Restart Apache for  RedHat
 
     - name: Start Apache
