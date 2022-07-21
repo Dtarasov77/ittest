@@ -1,0 +1,54 @@
+---
+#Циклы - loop, with_items, until, with_fileglob#
+- name: My primer
+  hosts: all
+  become: yes
+
+  vars:
+    source_folder: ./MyWebSite/Index.html
+    destin_folder: /var/www/html
+  
+  tasks:
+  - name: Chek and Print OS family
+    debag: var=ansible_os_family
+
+  - block: #======Block for Ubuntu======
+    
+    - name: Install Apache for servers
+      apt: name=apache2 state=latest
+
+    - name: Start Apache on servers
+      service: name=apache2 state=started enabled=yes
+    
+    when: ansible_os_family == "Debian"
+  
+  - block: #=====Block for RedHat=====
+
+    - name: Install Apache for RedHat
+      yam: name=httpd state=latest
+
+    - name: Start Apache
+      service: name=httpd state=started enabled=yes
+      
+    when: ansible_os_family == "RedHat"
+
+  - name: Copy files for WebServers
+#   copy: src={{ source_folder }}/{{ item }} dest={{ destin_folder }} mode=0555
+#   loop:
+#     - "file1.txt"
+#     - "file2.png"
+    copy: src={{ item }} dest={{ destin_folder }} mode=0555
+    with_fileglob: "{{ source_folder }}/*.*"
+
+    notify: 
+      - Restart Apache for RedHat
+      - Restart Apache for Ubuntu
+
+  handlers:
+  - name: Restart Apache for RedHat
+    service: name=httpd state=restarted
+    when: ansible_os_family == "RedHat"
+  
+  - name: Restart Apache for Ubuntu
+    service: name=apache2 state=restarted
+    when: ansible_os_family == "Debian"
