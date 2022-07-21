@@ -1,0 +1,37 @@
+---
+#Разная инфа по blaybook#
+- name: My primer
+  hosts: all
+  become: yes
+
+  vars:
+    message1: Privet
+    message2: World
+    secret: 123
+
+  tasks:
+
+  - name: Privet 
+    debug:
+      var: secret
+
+  - debag:                           
+      msg: "Secret slovo {{ secret }}
+#без name вывели значение secret
+  - debug:
+      msg: "Vladeletc {{ owner}}" #owner - покажет владельца
+
+  - set_fat: full_message="{{ message1 }} {{ message2}} from {{ owner}}"
+#Оъединили 2 переменных и owner в одну переменную
+  - debug:
+      var: full_message
+
+  - debug:
+      var: ansible_destribution
+#Переменная которая есть в инфе о серверах, вывели ее
+  - shell: uptime
+    register: results
+#Сохранили комманду uptime в переменную results
+  - debag:
+      var: results
+#Вывели results
