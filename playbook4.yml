@@ -1,5 +1,5 @@
 ---
-#Циклы - loop, with_items, until, with_fileglob#
+#Шаблоны Jinja Template#
 - name: My primer
   hosts: all
   become: yes
@@ -25,7 +25,13 @@
     - name: Start Apache
       service: name=httpd state=started enabled=yes
     when: ansible_os_family == "RedHat"
-
+  
+  - name: Generate Index.html file
+    template: src={{ source_folder }}/index.j2 dest={{ destin_folder}}/index.html mode=0555
+    notify:
+      - Restart Apache for RedHat
+      - Restart Apache for Ubuntu
+#Замена всех введённых переменных в файле html.j2 на их значение в коде и -> .html
   - name: Copy files for WebServers
 #   copy: src={{ source_folder }}/{{ item }} dest={{ destin_folder }} mode=0555
 #   loop:
